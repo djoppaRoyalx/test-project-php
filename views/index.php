@@ -27,7 +27,16 @@
 	</div>
 
 	<div class="col-md-6">
-		<form method="post" class="needs-validation" action="create.php">
+		<form method="post" class="needs-validation" action="search.php">
+			<div class="form-group row">
+				<label class="col-sm-2" for="name">Search City:</label>
+				<div class="col-sm-10">
+					<input class="form-control" name="search" input="text" id="search" required />
+				</div>
+			</div>
+		</form>
+		<hr/>
+		<form method="post" id="create" class="needs-validation" action="create.php">
 			<div class="form-group row">
 				<label class="col-sm-2" for="name">Name:</label>
 				<div class="col-sm-10">
@@ -67,7 +76,7 @@
 <script>
 	// javascript ajax call to create new row in database and reload page to show new row in table 
 	$(document).ready(function() {
-		$('form').submit(function(e) {
+		$('#create').submit(function(e) {
 			e.preventDefault();
 			$.ajax({
 				url: '/create.php',
@@ -75,6 +84,27 @@
 				data: $(this).serialize(),
 				success: function(data) {
 					location.reload();
+				}
+			});
+		});
+	});
+
+	// javascript ajax call to search when user types in search field
+	$(document).ready(function() {
+		$('#search').keyup(function(e) {
+			e.preventDefault();
+			$.ajax({
+				url: '/search.php',
+				type: 'GET',
+				data: {
+					city: $(this).val()
+				},
+				success: function(data) {
+					$('tbody').empty();
+					for (var i = 0; i < data.length; i++) {
+						let new_element = "<tr><td>" + data[i].name + "</td><td>" + data[i].email + "</td><td>" + data[i].city + "</td><td>" + data[i].phone + "</td></tr>";
+						$("tbody").append(new_element);
+					}
 				}
 			});
 		});
